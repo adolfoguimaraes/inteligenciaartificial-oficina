@@ -2,3 +2,5 @@ config.ini
 .ipynb_checkpoints
 .DS_Store
 models/output/
+__pycacahe__
+*.pyc
