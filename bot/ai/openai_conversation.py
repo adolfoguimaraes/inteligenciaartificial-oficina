@@ -41,12 +41,13 @@ class OpenAiConversation():
                 max_tokens=50,
                 stop=["\n", "<|endoftext|>"]
             )
+            
         except Exception as e:
             print("Não foi possível responder a sua pergunta.")
             print(e)
             return_ = []
 
-    
+        
         return return_['answers'][0]
 
     def getTopics(self): 

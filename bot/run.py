@@ -1,23 +1,30 @@
 from io import BytesIO
-from telegram import Update, ChatAction, ParseMode, ReplyKeyboardMarkup, ReplyKeyboardRemove
-from telegram.ext import Updater, CallbackContext, CommandHandler, MessageHandler, Filters, ConversationHandler
 
 import logging
 
+# Pacotes do Telegram
+from telegram import Update, ChatAction, ParseMode, ReplyKeyboardMarkup
+from telegram.ext import Updater, CallbackContext, CommandHandler, MessageHandler, Filters, ConversationHandler
+
+# Classes que implementam os métodos de IA
 from bot.ai.azure_caption import AzureCaption
 from bot.ai.custom_sentiment import CustomSentiment
 from bot.ai.openai_conversation import OpenAiConversation
 
+# Classe com as informações de configuração
 from bot.config import Config
 
-#CONVERSATION STATES
+# Converstation states para o ConversationHandler
 CHOOSE_TOPIC, MAKE_QUESTION = range(2)
 
+# Incialização dos métodos de IA
 azureCaption = AzureCaption()
 customSentiment = CustomSentiment()
 openaiCoversation = OpenAiConversation()
 
+# Inicialização da classe de configuração
 c = Config()
+
 
 updater = Updater(token=c.get_value("TELEGRAMBOT","TOKEN"), use_context=True)
 
@@ -148,13 +155,21 @@ def conversation_question(update: Update, context: CallbackContext):
 
     context.bot.send_chat_action(chat_id=update.effective_chat.id,action=ChatAction.TYPING)
     
-    answer = openaiCoversation.sendQuestion(topic, question)
+    try:
+        answer = openaiCoversation.sendQuestion(topic, question)
 
-    context.bot.send_message(
-        chat_id=update.message.chat_id, 
-        text=answer)
-    
-    return MAKE_QUESTION
+        context.bot.send_message(
+            chat_id=update.message.chat_id, 
+            text=answer)
+
+        return MAKE_QUESTION
+
+    except Exception as e:
+        logger.error(e)
+        context.bot.send_message(chat_id=update.effective_chat.id,
+                        text="Unfortunately, it was not possible to answer your question. If you want to talk again with me, just use the comand /conversation.")
+
+        return ConversationHandler.END
 
 
 

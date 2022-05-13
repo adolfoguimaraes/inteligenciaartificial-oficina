@@ -11,7 +11,6 @@
 7. Incrementando e testando o bot
 8. Encerramento
 
-
 ## Apresentação 
 
 Meu nome é Adolfo Guimarães. 
