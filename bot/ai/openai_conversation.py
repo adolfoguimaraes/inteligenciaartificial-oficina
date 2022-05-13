@@ -1,4 +1,5 @@
-import os 
+import os
+from numpy import dtype 
 import openai
 
 from bot.config import Config
@@ -10,6 +11,12 @@ class OpenAiConversation():
 
         openai.api_key = c.get_value("OPENAI", "SECRETKEY")
 
+        if c.get_value("OPENAI", "ACTIVE") == "0":
+            self.status = False
+        else: 
+            self.status = True 
+        
+
         self.conversationTopics = {
             'starwars': {
                 'file_id': 'file-ruakplgi1ad3SkF2osaaD6Sg',
@@ -17,6 +24,9 @@ class OpenAiConversation():
                 'examples': [["What is Star Wars?","A famous movie's serie."]]
             }
         }
+
+    def getStatus(self):
+        return self.status
 
     def makeQuestion(self, input_file, question, example_context, examples):
 
@@ -39,14 +49,21 @@ class OpenAiConversation():
     
         return return_['answers'][0]
 
+    def getTopics(self): 
+        return list(self.conversationTopics.keys())
 
     def sendQuestion(self, topic, question):
 
-        file_ = self.conversationTopics[topic]['file_id']
-        example_context = self.conversationTopics[topic]['example_context']
-        examples = self.conversationTopics[topic]['examples']
+        if (self.status):
 
-        return self.makeQuestion(file_, question, example_context, examples)
+            file_ = self.conversationTopics[topic]['file_id']
+            example_context = self.conversationTopics[topic]['example_context']
+            examples = self.conversationTopics[topic]['examples']
+
+            return self.makeQuestion(file_, question, example_context, examples)
+        else:
+
+            return "This service is inactive."
 
 
     
@@ -60,4 +77,5 @@ if __name__ == "__main__":
 
     openai_ = OpenAiConversation()
     print(openai_.sendQuestion("starwars", "What you know about Anakin Sakywalker?"))
+    
 

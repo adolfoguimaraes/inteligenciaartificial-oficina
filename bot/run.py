@@ -1,18 +1,21 @@
 from io import BytesIO
-from telegram import Update, ChatAction, ParseMode
-from telegram.ext import Updater, CallbackContext, CommandHandler, MessageHandler, Filters
+from telegram import Update, ChatAction, ParseMode, ReplyKeyboardMarkup, ReplyKeyboardRemove
+from telegram.ext import Updater, CallbackContext, CommandHandler, MessageHandler, Filters, ConversationHandler
 
 import logging
 
-from ai.azure_caption import AzureCaption
-from ai.azure_translator import AzureTranslator
-from ai.custom_sentiment import CustomSentiment
+from bot.ai.azure_caption import AzureCaption
+from bot.ai.custom_sentiment import CustomSentiment
+from bot.ai.openai_conversation import OpenAiConversation
 
 from bot.config import Config
 
+#CONVERSATION STATES
+CHOOSE_TOPIC, MAKE_QUESTION = range(2)
+
 azureCaption = AzureCaption()
-azureTranlator = AzureTranslator()
 customSentiment = CustomSentiment()
+openaiCoversation = OpenAiConversation()
 
 c = Config()
 
@@ -39,11 +42,39 @@ def start(update: Update, context: CallbackContext):
 def help_(update: Update, context: CallbackContext):
 
     msg = "Just send an image and I will describe it." \
-                    "\nUse /translate <strong>[text]</strong> and I will translate the text for you. For a while, I just know translate from english to portuguese." \
-                    "\nUse /sentiment <strong>[text]</strong> and I will analyse sentiment of the text." 
+                    "\nUse /sentiment <strong>[text]</strong> and I will analyse sentiment of the text." \
+                    "\nUse /conversation to start talking about a topic that I studied."
 
     context.bot.send_message(chat_id=update.effective_chat.id,
                             text=msg, parse_mode=ParseMode.HTML)
+
+def coversation(update: Update, context: CallbackContext):
+
+    user = update.message.from_user
+    context.bot.send_chat_action(chat_id=update.message.chat_id, action=ChatAction.TYPING)
+
+    if(openaiCoversation.getStatus()):
+
+        msg = "Hi, %s. What topic do you want to talk about?" % user.first_name
+
+        reply_keyboard = [openaiCoversation.getTopics()]
+
+        update.message.reply_text(msg, reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+        return CHOOSE_TOPIC
+    else:
+
+        msg = "Sorry <strong>%s</strong>, but this service is inactive at this moment :(" % user.first_name
+
+        context.bot.send_message(chat_id=update.effective_chat.id,
+                            text=msg, parse_mode=ParseMode.HTML)
+
+        return ConversationHandler.END
+
+
+
+
+
 
 def image(update: Update, context: CallbackContext):
     photo = update.message.photo[-1].get_file()
@@ -58,17 +89,6 @@ def image(update: Update, context: CallbackContext):
         context.bot.send_message(chat_id=update.effective_chat.id,
                         text="Unfortunately, the image could not be recognized.")
 
-def translate(update: Update, context: CallbackContext):
-    message = ' '.join(context.args)
-    
-    try: 
-        context.bot.send_chat_action(chat_id=update.effective_chat.id,action=ChatAction.TYPING)
-        translation = azureTranlator.translate(message)
-        update.message.reply_text(translation)
-    except Exception as e:
-        logger.error(e)
-        context.bot.send_message(chat_id=update.effective_chat.id,
-                        text="Unfortunately, it was not possible to translate.")
 
 def sentiment(update: Update, context: CallbackContext):
 
@@ -85,6 +105,59 @@ def sentiment(update: Update, context: CallbackContext):
         context.bot.send_message(chat_id=update.effective_chat.id,
                         text="Unfortunately, it was not possible to get the sentiment.")
 
+def conversation_finish(update: Update, context: CallbackContext):
+
+    context.bot.send_chat_action(chat_id=update.effective_chat.id,action=ChatAction.TYPING)
+    context.bot.send_message(
+        chat_id=update.message.chat_id, 
+        text="Tanks for this conversation. If you want to talk again with me, just use the comand /conversation.")
+
+    if "topic" in context.chat_data:
+        del context.chat_data["topic"]
+
+
+    return ConversationHandler.END
+
+def conversation_topic(update: Update, context: CallbackContext):
+
+
+    topic = update.message.text
+    msg1 = "Let's talk about %s. What do you want know? To finish our conversation, just type /finish." % topic
+ 
+    context.bot.send_message(
+        chat_id=update.message.chat_id, 
+        text=msg1)
+
+    context.chat_data['topic'] = topic
+
+
+    return MAKE_QUESTION
+
+
+def conversation_question(update: Update, context: CallbackContext):
+
+    question = update.message.text
+    topic = context.chat_data['topic']
+    context.bot.send_chat_action(chat_id=update.effective_chat.id,action=ChatAction.TYPING)
+    
+    msg1 = "Humm, interesting question. Take a minute please."
+ 
+    context.bot.send_message(
+        chat_id=update.message.chat_id, 
+        text=msg1)
+
+    context.bot.send_chat_action(chat_id=update.effective_chat.id,action=ChatAction.TYPING)
+    '''
+    Ucomment this part to use OpenAI API.
+    answer = openaiCoversation.sendQuestion(topic, question)
+
+    context.bot.send_message(
+        chat_id=update.message.chat_id, 
+        text=answer)
+    '''
+    return MAKE_QUESTION
+
+
 
 start_handler = CommandHandler('start', start)
 dispatcher.add_handler(start_handler)
@@ -95,11 +168,21 @@ dispatcher.add_handler(help_handler)
 image_handler = MessageHandler(Filters.photo, image)
 dispatcher.add_handler(image_handler)
 
-translate_handler = CommandHandler('translate', translate, pass_args=True)
-dispatcher.add_handler(translate_handler)
-
 sentiment_handler = CommandHandler('sentiment', sentiment, pass_args=True)
 dispatcher.add_handler(sentiment_handler)
+
+# Coversation Handler 
+
+conversation_handler = ConversationHandler(
+    entry_points=[CommandHandler('conversation', coversation)],
+    states = {
+        CHOOSE_TOPIC: [MessageHandler(Filters.text, conversation_topic, pass_chat_data=True)],
+        MAKE_QUESTION: [MessageHandler(Filters.text & ~(Filters.command), conversation_question,  pass_chat_data=True)],
+    },
+    fallbacks=[CommandHandler('finish', conversation_finish)]
+)
+dispatcher.add_handler(conversation_handler)
+
 
 
 updater.start_polling()
