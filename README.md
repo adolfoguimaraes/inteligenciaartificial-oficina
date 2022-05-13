@@ -24,7 +24,7 @@ Meu nome é Adolfo Guimarães.
 
 ## Introdução Teórica
 
-<iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQfg_MGKF5uTWFl45vkVGdswiUggcawSvUJFgYom5WlDGa8q1vC9EABB7TrFJ0Svy7k3Qu-Sd6uJeZE/embed?start=false&loop=false&delayms=3000" frameborder="0" width="960" height="569" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+Clique [aqui](https://docs.google.com/presentation/d/1n_HfMXpYUuvY62AntJrlXVa6mdX6Hm35cIOBdlIndLA/edit?usp=sharing) para acessar os slides.
 
 ## Bot Simples
 
@@ -42,8 +42,23 @@ Para o modelo de descrição de imagens vamos utilizar a nuvem da Azure. Ela pos
 
 ## Utilizando a GPT-3 com a API do OpenAI.
 
-Nosso último modelo de Machine Learning vai ser o de conversação utilizando a API da OpenAI. Essa API dá acesso 
+Nosso último modelo de Machine Learning vai ser o de conversação utilizando a API da OpenAI. Essa API dá acesso ao modelo da GPT-3, o principal modelo de processamento de linguagem natural implementado até então. Vamos mostrar as funcionalidades do site e como podemos usa-lo como uma API. Infelizmente, seu uso não é gratuito, mas a API permite um período de teste de 3 meses com um crédito de $18. É suficiente para apresentar nossos exemplos.
 
 ## Incrementando e testando o bot.
 
+Por fim, vamos incrementar nosso bot com as funcionalidades apresentadas anteriormente. Vamos implementar algumas classes utilizando a descrição de imagens, a análise de sentimento e a conversação sobre um determinado tópico treinado previamente.
+
 ## Encerramento.
+
+Ao final espero que vocês tenham uma visão geral sobre o que é Inteligência Artificial e Machine Learning, assim como experimentado algumas ferramentas. 
+
+Para finalizar peço que avaliem essa oficina através [deste link](https://forms.gle/d8V6kHsZQp8fi2af8). Sua avaliação é muito imporante para futuras oficinas :) 
+
+Se tiver interesse nesse tema, acessa minhas redes sociais que sempre estou postando algo relacionado por lá.
+
+* [Twitter](https://www.twitter.com/adolfoguimaraes)
+* [Instagram](https://www.instagram.com/profadolfoguimaraes)
+* [GitHub](https://www.github.com/adolfoguimaraes)
+
+Muito Obrigado e vejo vocês nos próximos eventos :) 
+
