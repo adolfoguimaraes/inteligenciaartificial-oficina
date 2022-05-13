@@ -30,7 +30,11 @@ Para o modelo de análise de sentimento, vamos treinar um modelo de análise de 
 
 ## Modelo para Descrição de Imagens 
 
+Para o modelo de descrição de imagens vamos utilizar a nuvem da Azure. Ela possui um serviço de reconhecimento de imagem e podemo acessa-lo a partir de uma conta gratuita de estudante. No minicurso será mostrado como criar e acessar os recurso utilizando o e-mail insitucional. 
+
 ## Utilizando a GPT-3 com a API do OpenAI.
+
+Nosso último modelo de Machine Learning vai ser o de conversação utilizando a API da OpenAI. Essa API dá acesso 
 
 ## Incrementando e testando o bot.
 
