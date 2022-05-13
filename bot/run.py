@@ -147,14 +147,13 @@ def conversation_question(update: Update, context: CallbackContext):
         text=msg1)
 
     context.bot.send_chat_action(chat_id=update.effective_chat.id,action=ChatAction.TYPING)
-    '''
-    Ucomment this part to use OpenAI API.
+    
     answer = openaiCoversation.sendQuestion(topic, question)
 
     context.bot.send_message(
         chat_id=update.message.chat_id, 
         text=answer)
-    '''
+    
     return MAKE_QUESTION
 
 

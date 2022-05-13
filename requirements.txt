@@ -1,7 +1,7 @@
-azure-cognitiveservices-vision-computervision==0.9.0
-joblib @ file:///tmp/build/80754af9/joblib_1635411271373/work
-matplotlib @ file:///private/var/folders/sy/f16zz6x50xz3113nwtb9bvq00000gp/T/abs_croot-hkd3cnd2/matplotlib-suite_1647506470899/work
-openai==0.18.1
-pandas==1.4.2
-python-telegram-bot==13.11
-scikit-learn @ file:///opt/concourse/worker/volumes/live/cffa5efe-beec-4a37-5774-350794e43990/volume/scikit-learn_1642617139916/work
+azure-cognitiveservices-vision-computervision
+joblib
+matplotlib
+openai
+pandas
+python-telegram-bot
+scikit-learn
