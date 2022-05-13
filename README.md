@@ -14,9 +14,17 @@
 
 ## Apresentação 
 
+Meu nome é Adolfo Guimarães. 
+
+- 🌍 Brasileiro/Nordestino/Sergipano
+- 📚 Professor e Pesquisador na área de Ciência da Computação
+- 💻 #python
+- ❤ Inteligência artificial
+- 👊 Acredito que a tecnologia (e a Inteligência Artificial) pode e deve ser utilizada em prol da sociedade. 
+
 ## Introdução Teórica
 
-[Slides]
+<iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQfg_MGKF5uTWFl45vkVGdswiUggcawSvUJFgYom5WlDGa8q1vC9EABB7TrFJ0Svy7k3Qu-Sd6uJeZE/embed?start=false&loop=false&delayms=3000" frameborder="0" width="960" height="569" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
 
 ## Bot Simples
 
